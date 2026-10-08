@@ -9,25 +9,24 @@ android {
 
     defaultConfig {
         applicationId = "com.srk.bot"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.10"
 
         resValue("string", "app_name", "SRK BOT")
         resValue("string", "bot_title", "SRK BOT")
-        resValue("string", "accessibility_service_description", "خدمة القبول التلقائي الاحترافية لـ SRK BOT (مع إصلاح وتتبع السيرفر)")
+        resValue("string", "accessibility_service_description", "خدمة القبول التلقائي الاحترافية لـ SRK BOT (أوفلاين)")
     }
 
     signingConfigs {
         create("release") {
-            val keystoreFile = file("release.keystore")
-            if (keystoreFile.exists()) {
-                storeFile = keystoreFile
-                storePassword = "android123"
-                keyAlias = "bot_key"
-                keyPassword = "android123"
-            }
+            storeFile = file("release.keystore")
+            storePassword = "android123"
+            keyAlias = "bot_key"
+            keyPassword = "android123"
+            enableV1Signing = true
+            enableV2Signing = true
         }
     }
 
@@ -43,6 +42,7 @@ android {
         }
         debug {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
