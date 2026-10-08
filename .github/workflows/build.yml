@@ -1,4 +1,4 @@
-name: SRK Bot - Server Fix & Tracing Build
+name: Patch & Fix Original SRK Bot APK
 
 on:
   push:
@@ -9,107 +9,101 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  trace-and-build:
-    name: Trace Server & Build Fixed SRK Bot APK
+  patch-original-apk:
+    name: Patch and Sign Original SRK_Bot_1.10.apk
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Trace Original APK Server & Generate Diagnostic Report
-        run: |
-          python3 - << 'EOF'
-          import os, zipfile, re
-
-          report = []
-          report.append("# تقرير تتبع وتشخيص سيرفر تطبيق SRK Bot")
-          report.append("=" * 60)
-
-          apk_path = "SRK_Bot_1.10.apk"
-          if os.path.exists(apk_path):
-              report.append(f"## 1. فحص ملف الـ APK الأصلي ({apk_path})")
-              with zipfile.ZipFile(apk_path) as z:
-                  libs = [n for n in z.namelist() if 'xuanwu' in n or 'dpt' in n]
-                  for lib in libs:
-                      report.append(f"- مكتبة حماية وتحقق: `{lib}`")
-                  
-                  arm64_lib = 'lib/arm64-v8a/libxuanwu.so'
-                  if arm64_lib in z.namelist():
-                      data = z.read(arm64_lib)
-                      urls = re.findall(rb'https?://[a-zA-Z0-9_.-]+', data)
-                      for u in sorted(set(u.decode('latin1') for u in urls)):
-                          report.append(f"- رابط مستخرج: `{u}`")
-          else:
-              report.append("- تم فحص ملفات المشروع (ملف APK الأصلي مدمج في الكود المصدري المستخرج).")
-
-          report.append("\n## 2. تشخيص سبب عطل السيرفر القديم:")
-          report.append("- السيرفر القديم: `skrbotserver-default-rtdb.firebaseio.com` (مشروع Firebase معطوب/محذوف).")
-          report.append("- النتيجة السابقة: كان التطبيق يعلق عند `Connecting to server...` و `NoConnectionScreen`.")
-
-          report.append("\n## 3. حالة الإصلاح المعتمد:")
-          report.append("- تم تفريغ وتجاوز فحص السيرفر الإجباري المعطوب في الكود المصدري بنسبة 100%.")
-          report.append("- تطبيق البوت يعمل محلياً بسرعة استجابة 0ms وبدون أي توقف.")
-          report.append("=" * 60)
-
-          content = '\n'.join(report)
-          print(content)
-          with open("server_trace_report.md", "w", encoding="utf-8") as f:
-              f.write(content)
-          EOF
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
-      - name: Grant Execute Permission to Gradlew
-        run: chmod +x gradlew
+      - name: Direct Binary Patching on Original SRK_Bot_1.10.apk
+        run: |
+          python3 - << 'EOF'
+          import os, zipfile
 
-      - name: Generate Keystore for Signing
+          input_apk = "SRK_Bot_1.10.apk"
+          output_apk = "output_apk/SRK_Bot_1.10_Original_Fixed.apk.unsigned.apk"
+          old_url = b"https://skrbotserver-default-rtdb.firebaseio.com"
+          new_url = b"https://srkbot-fix-rtdb.firebaseio.com\x00\x00\x00\x00\x00\x00\x00"
+
+          if not os.path.exists(input_apk):
+              raise FileNotFoundError(f"{input_apk} not found in repository root!")
+
+          os.makedirs("output_apk", exist_ok=True)
+          print(f"[*] Starting direct binary patch on original {input_apk}...")
+
+          patches = 0
+          with zipfile.ZipFile(input_apk, 'r') as zin, zipfile.ZipFile(output_apk, 'w', compression=zipfile.ZIP_DEFLATED) as zout:
+              for item in zin.infolist():
+                  # Strip old signature files for clean re-signing
+                  if item.filename.startswith("META-INF/") and (item.filename.endswith(".SF") or item.filename.endswith(".RSA") or item.filename.endswith(".MF")):
+                      continue
+
+                  data = zin.read(item.filename)
+                  if old_url in data:
+                      count = data.count(old_url)
+                      data = data.replace(old_url, new_url)
+                      patches += count
+                      print(f"  [+] Replaced {count} server URLs in {item.filename}")
+
+                  zout.writestr(item, data)
+
+          print(f"[*] Done! Total patched server entries: {patches}")
+          EOF
+
+      - name: Generate Signing Keystore
         run: |
           keytool -genkeypair -v \
-            -keystore app/release.keystore \
+            -keystore release.keystore \
             -alias bot_key \
             -keyalg RSA \
             -keysize 2048 \
             -validity 10000 \
             -storepass "android123" \
             -keypass "android123" \
-            -dname "CN=BotDev, O=SRKBot, C=SA"
+            -dname "CN=SRKBot, O=OriginalSRK, C=SA"
 
-      - name: Build Both Debug and Release APKs
-        run: ./gradlew assembleDebug assembleRelease --no-daemon --stacktrace
-
-      - name: Collect Fixed APKs & Trace Report
+      - name: Zipalign and Sign the Original Patched APK
         run: |
-          mkdir -p output_apk
-          find app/build/outputs/apk/release/ -type f -name "*.apk" -exec cp -v {} output_apk/SRK_Bot_Release.apk \; || true
-          find app/build/outputs/apk/debug/ -type f -name "*.apk" -exec cp -v {} output_apk/SRK_Bot_Debug.apk \; || true
-          [ -f server_trace_report.md ] && cp -v server_trace_report.md output_apk/
-          echo "Output directory contents:"
-          ls -la output_apk/
+          BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)
+          echo "Android Build Tools: $BUILD_TOOLS"
 
-      - name: Upload Fixed APKs & Trace Report Artifacts
+          # 1. Zipalign 4-byte boundaries
+          $BUILD_TOOLS/zipalign -f -v -p 4 \
+            output_apk/SRK_Bot_1.10_Original_Fixed.apk.unsigned.apk \
+            output_apk/SRK_Bot_1.10_Original_Fixed.apk
+
+          # 2. Sign with apksigner (v1 + v2 + v3 full scheme)
+          $BUILD_TOOLS/apksigner sign \
+            --ks release.keystore \
+            --ks-pass pass:android123 \
+            --ks-key-alias bot_key \
+            --key-pass pass:android123 \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            output_apk/SRK_Bot_1.10_Original_Fixed.apk
+
+          # 3. Verify signature integrity
+          $BUILD_TOOLS/apksigner verify --verbose output_apk/SRK_Bot_1.10_Original_Fixed.apk
+
+          # Remove temporary unsigned file
+          rm -f output_apk/*.unsigned.apk
+
+          echo "Final Original Fixed APK ready:"
+          ls -lh output_apk/
+
+      - name: Upload Original Fixed APK
         uses: actions/upload-artifact@v4
         with:
-          name: SRK-Bot-ServerFix-Artifacts
-          path: output_apk/*
+          name: SRK_Bot_1.10_Original_Fixed_APK
+          path: output_apk/*.apk
           retention-days: 14
-
-      - name: Deploy Mock Server to GitHub Pages
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-        run: |
-          if [ -d "server_mock" ]; then
-            echo "server_mock directory found, ready for GitHub Pages."
-          else
-            mkdir -p server_mock
-            echo '{"status": "ok"}' > server_mock/index.json
-          fi
-        continue-on-error: true
