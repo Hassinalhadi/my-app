@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#050508">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header Card with Authentic Logo and Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_neon_bg"
+            android:padding="18dp"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="14dp">
+
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:src="@drawable/app_logo"
+                android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:id="@+id/tvAppTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bot_title"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Multi-Driver Auto Accept • v1.10 PRO OFFLINE"
+                android:textColor="#00E5FF"
+                android:textSize="13sp"
+                android:layout_marginBottom="14dp" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BOT ACTIVE 🟢"
+                android:textColor="#00E676"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="14dp" />
+
+            <Button
+                android:id="@+id/btnToggleBot"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="تشغيل / إيقاف البوت"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/btn_neon_cyan" />
+        </LinearLayout>
+
+        <!-- Permissions Dashboard Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_neon_bg"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🛡️ حالة الصلاحيات والتشغيل:"
+                android:textColor="#00E5FF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="8dp">
+
+                <Button
+                    android:id="@+id/btnAccessibility"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:text="إمكانية الوصول ♿"
+                    android:textSize="12sp"
+                    android:textColor="#00E5FF"
+                    android:background="@drawable/btn_neon_dark"
+                    android:layout_marginEnd="4dp" />
+
+                <Button
+                    android:id="@+id/btnOverlay"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:text="الزر العائم 🪟"
+                    android:textSize="12sp"
+                    android:textColor="#00E5FF"
+                    android:background="@drawable/btn_neon_dark"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnBattery"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="⚡ إيقاف تحسين البطارية (للعمل المستمر دون توقف)"
+                android:textSize="12sp"
+                android:textColor="#90A4AE"
+                android:background="@drawable/btn_neon_dark" />
+        </LinearLayout>
+
+        <!-- Country Selection Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_neon_bg"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌍 اختر الدولة / النمط الجغرافي:"
+                android:textColor="#00E5FF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <RadioGroup
+                android:id="@+id/rgCountry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RadioButton
+                    android:id="@+id/rbSaudi"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="🇸🇦 السعودية (SAR)"
+                    android:textColor="#FFFFFF"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/rbIndonesia"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="🇮🇩 إندونيسيا (IDR)"
+                    android:textColor="#FFFFFF" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- Target Apps Selection Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_neon_bg"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚗 التطبيقات المستهدفة للقبول التلقائي:"
+                android:textColor="#00E5FF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <CheckBox
+                android:id="@+id/cbJeeny"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jeeny Driver (جيني درايفر)"
+                android:textColor="#FFFFFF"
+                android:checked="true" />
+
+            <CheckBox
+                android:id="@+id/cbUber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Uber Driver (أوبر درايفر)"
+                android:textColor="#FFFFFF"
+                android:checked="true" />
+
+            <CheckBox
+                android:id="@+id/cbGrab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Grab Driver (غراب درايفر)"
+                android:textColor="#FFFFFF"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Filters Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_neon_bg"
+            android:padding="14dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚙️ فلاتر الأسعار والمسافة وسرعة المحرك:"
+                android:textColor="#00E5FF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="12dp">
+
+                <EditText
+                    android:id="@+id/etMinPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:hint="أدنى سعر"
+                    android:inputType="numberDecimal"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#546E7A"
+                    android:background="@drawable/input_field_bg"
+                    android:padding="10dp"
+                    android:layout_marginEnd="5dp" />
+
+                <EditText
+                    android:id="@+id/etMaxPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:hint="أعلى سعر"
+                    android:inputType="numberDecimal"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#546E7A"
+                    android:background="@drawable/input_field_bg"
+                    android:padding="10dp"
+                    android:layout_marginStart="5dp" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/etMaxDistance"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:hint="أقصى مسافة (كم) - مثال: 20"
+                android:inputType="numberDecimal"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#546E7A"
+                android:background="@drawable/input_field_bg"
+                android:padding="10dp"
+                android:layout_marginBottom="12dp" />
+
+            <EditText
+                android:id="@+id/etDelay"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:hint="سرعة الاستجابة والتأخير (ملي ثانية) - مثال: 80"
+                android:inputType="number"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#546E7A"
+                android:background="@drawable/input_field_bg"
+                android:padding="10dp"
+                android:layout_marginBottom="12dp" />
+
+            <CheckBox
+                android:id="@+id/cbAutoReject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="الرفض التلقائي للطلبات غير المطابقة (Auto Reject)"
+                android:textColor="#ECEFF1"
+                android:textSize="13sp"
+                android:layout_marginBottom="6dp" />
+
+            <CheckBox
+                android:id="@+id/cbSound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="تنبيه صوت Garuda الأصلي (Accept / Reject)"
+                android:textColor="#ECEFF1"
+                android:textSize="13sp"
+                android:checked="true"
+                android:layout_marginBottom="6dp" />
+
+            <CheckBox
+                android:id="@+id/cbVibrate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="الاهتزاز اللمسي الفوري"
+                android:textColor="#ECEFF1"
+                android:textSize="13sp"
+                android:checked="true" />
+        </LinearLayout>
+
+        <!-- Locations & Actions -->
+        <Button
+            android:id="@+id/btnPresets"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="📍 السفارات والمواقع المحددة (130+ موقع)"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/btn_neon_dark"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="💾 حفظ كافة الإعدادات والفلاتر"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:background="@drawable/btn_neon_cyan"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:text="📜 عرض سجل العمليات والطلبات (History)"
+            android:textColor="#90A4AE"
+            android:background="@drawable/btn_neon_dark"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Support Community Card -->
+        <Button
+            android:id="@+id/btnTelegram"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:text="✈️ مجتمع التليجرام الرسمي (SRK BOT OFFICIAL)"
+            android:textColor="#00E5FF"
+            android:background="@drawable/btn_neon_dark"
+            android:layout_marginBottom="24dp" />
+
+    </LinearLayout>
+</ScrollView>

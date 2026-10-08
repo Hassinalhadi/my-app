@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.JeenyBot" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#00E5FF</item>
+        <item name="android:statusBarColor">#050508</item>
+        <item name="android:navigationBarColor">#050508</item>
+    </style>
+</resources>

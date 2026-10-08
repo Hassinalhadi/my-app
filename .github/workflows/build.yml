@@ -1,0 +1,81 @@
+name: SRK Bot - Server Fix & Tracing Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  trace-and-build:
+    name: Trace Server & Build Single Fixed SRK Bot APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python for Server Tracing
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Trace Original APK Server & Generate Diagnostic Report
+        run: |
+          chmod +x scripts/trace_server.py
+          python3 scripts/trace_server.py
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant Execute Permission to Gradlew
+        run: chmod +x gradlew
+
+      - name: Generate Keystore for Signing
+        run: |
+          keytool -genkeypair -v \
+            -keystore app/release.keystore \
+            -alias bot_key \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass "android123" \
+            -keypass "android123" \
+            -dname "CN=BotDev, O=SRKBot, C=SA"
+
+      - name: Build Fixed Release APK (Single Target)
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Collect Fixed APK & Trace Report
+        run: |
+          mkdir -p output_apk
+          find app/build/outputs/apk/release/ -type f -name "*.apk" -exec cp -v {} output_apk/SRK_Bot_Fixed.apk \; || find app/build/outputs/apk/ -type f -name "*release*.apk" -exec cp -v {} output_apk/SRK_Bot_Fixed.apk \;
+          cp -v server_trace_report.md output_apk/
+          echo "Output directory contents:"
+          ls -la output_apk/
+
+      - name: Upload Fixed APK & Trace Report Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SRK-Bot-ServerFix-Artifacts
+          path: output_apk/*
+          retention-days: 14
+
+      - name: Deploy Mock Server to GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./server_mock
+          publish_branch: gh-pages
+          force_orphan: true
